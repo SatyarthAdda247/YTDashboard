@@ -1,0 +1,8 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" rx="16" fill="#10B981"/>
+  <path d="M20 20H44V44H20V20Z" fill="white"/>
+  <path d="M24 24H40V28H24V24Z" fill="#10B981"/>
+  <path d="M24 32H40V36H24V32Z" fill="#10B981"/>
+  <path d="M24 40H32V44H24V40Z" fill="#10B981"/>
+  <text x="32" y="56" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="8" font-weight="bold">TEST PREP</text>
+</svg>
