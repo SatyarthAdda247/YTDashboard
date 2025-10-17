@@ -5,11 +5,9 @@ import {
   TrendingUp, 
   Users, 
   Eye, 
-  RefreshCw, 
   ChevronLeft, 
   ChevronRight,
   Info,
-  Calendar,
   ArrowUpRight,
   PlayCircle
 } from 'lucide-react'
@@ -108,7 +106,6 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedVertical, setSelectedVertical] = useState(0) // 0 = Combined Overview
-  const [timeRange, setTimeRange] = useState('Last 30 Days')
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
   
@@ -268,9 +265,11 @@ function App() {
     })
   }
 
-  const fetchAllData = async () => {
-    setLoading(true)
-    setIsRefreshing(true)
+  const fetchAllData = async (silent = false) => {
+    if (!silent) {
+      setLoading(true)
+      setIsRefreshing(true)
+    }
     setError(null)
 
     try {
@@ -289,8 +288,10 @@ function App() {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
-      setLoading(false)
-      setIsRefreshing(false)
+      if (!silent) {
+        setLoading(false)
+        setIsRefreshing(false)
+      }
     }
   }
 
@@ -299,9 +300,9 @@ function App() {
     fetchAllData()
   }, [])
 
-  // Auto-refresh every 5 minutes
+  // Auto-refresh every 6 seconds (silent)
   useEffect(() => {
-    const interval = setInterval(fetchAllData, 5 * 60 * 1000)
+    const interval = setInterval(() => fetchAllData(true), 6 * 1000)
     return () => clearInterval(interval)
   }, [])
 
@@ -458,38 +459,14 @@ function App() {
       >
         <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex items-center justify-between h-14">
-            <div className="flex items-center space-x-4">
-              <BarChart3 className="w-8 h-8 text-primary-600" />
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-primary-600" />
               <div>
-                <h1 className="text-lg font-semibold text-gray-900">Adda Education Analytics</h1>
-                <p className="text-xs text-gray-500">Comprehensive playlist insights</p>
+                <h1 className="text-sm sm:text-lg font-semibold text-gray-900">Adda Education Analytics</h1>
+                <p className="hidden sm:block text-xs text-gray-500">Comprehensive playlist insights</p>
               </div>
             </div>
             
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <Calendar className="w-4 h-4 text-gray-400" />
-                  <select 
-                    value={timeRange}
-                    onChange={(e) => setTimeRange(e.target.value)}
-                    className="bg-transparent text-sm text-gray-600 border-none outline-none"
-                  >
-                    <option>Last 30 Days</option>
-                    <option>Last 7 Days</option>
-                    <option>Last 90 Days</option>
-                  </select>
-                </div>
-                
-                <button 
-                  onClick={fetchAllData}
-                  disabled={isRefreshing}
-                  className="btn-primary flex items-center space-x-2 disabled:opacity-50"
-                >
-                  <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                  <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
-                </button>
-
-              </div>
           </div>
         </div>
       </motion.header>
@@ -503,47 +480,47 @@ function App() {
           className="mb-8"
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Verticals Overview</h2>
-            <div className="flex items-center space-x-2 text-sm text-gray-500">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Verticals Overview</h2>
+            <div className="hidden sm:flex items-center space-x-2 text-sm text-gray-500">
               <Info className="w-4 h-4" />
               <span>Total views across all categories</span>
             </div>
           </div>
           
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
             {verticals.map((vertical, index) => (
               <motion.div
                 key={vertical.name}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.1 + index * 0.1 }}
-                className={`card card-hover p-4 cursor-pointer ${
+                className={`card card-hover p-2 sm:p-4 cursor-pointer ${
                   selectedVertical === vertical.index ? 'ring-2 ring-primary-500' : ''
                 }`}
                 onClick={() => setSelectedVertical(vertical.index)}
               >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-10 h-10 rounded-xl overflow-hidden bg-white flex items-center justify-center shadow-sm">
+                <div className="flex items-center justify-between mb-2 sm:mb-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl overflow-hidden bg-white flex items-center justify-center shadow-sm">
                     <img 
                       src={vertical.logo} 
                       alt={vertical.name}
-                      className="w-10 h-10 object-cover"
+                      className="w-8 h-8 sm:w-10 sm:h-10 object-cover"
                       onError={(e) => {
                         // Fallback to colored background with first letter if image fails to load
                         const target = e.target as HTMLImageElement;
                         target.style.display = 'none';
                         const parent = target.parentElement;
                         if (parent) {
-                          parent.className = `w-10 h-10 ${vertical.color} rounded-xl flex items-center justify-center text-white text-lg font-bold`;
+                          parent.className = `w-8 h-8 sm:w-10 sm:h-10 ${vertical.color} rounded-xl flex items-center justify-center text-white text-sm sm:text-lg font-bold`;
                           parent.textContent = vertical.name.charAt(0);
                         }
                       }}
                     />
                   </div>
-                  <TrendingUp className="w-5 h-5 text-green-500" />
+                  <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-1 text-sm">{vertical.name}</h3>
-                <p className="text-xl font-bold text-gray-900">
+                <h3 className="font-semibold text-gray-900 mb-1 text-xs sm:text-sm">{vertical.name}</h3>
+                <p className="text-lg sm:text-xl font-bold text-gray-900">
                   {formatNumber(verticalTotals[index] || 0)}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">total views</p>
