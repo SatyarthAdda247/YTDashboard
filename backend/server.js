@@ -9,8 +9,8 @@ const PORT = process.env.PORT || 3000;
 
 // Environment configuration
 const isProduction = process.env.NODE_ENV === 'production';
-const CLIENT_URL = isProduction ? 'https://AddaYTDashboard.vercel.app' : 'http://localhost:8000';
-const SERVER_URL = isProduction ? 'https://AddaYTDashboard.vercel.app' : 'http://localhost:3000';
+const CLIENT_URL = isProduction ? process.env.CLIENT_ROOT_URI : 'http://localhost:8000';
+const SERVER_URL = isProduction ? process.env.SERVER_ROOT_URI : 'http://localhost:3000';
 
 // Middleware
 app.use(cors({
@@ -29,7 +29,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-producti
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  isProduction ? 'https://AddaYTDashboard.vercel.app' : 'http://localhost:8000'
+  isProduction ? process.env.CLIENT_ROOT_URI : 'http://localhost:8000'
 );
 
 // Google OAuth2 scopes
@@ -113,12 +113,12 @@ app.get('/', async (req, res) => {
       );
 
       // Redirect to frontend with token
-      const frontendUrl = isProduction ? 'https://AddaYTDashboard.vercel.app' : 'http://localhost:8000';
+      const frontendUrl = isProduction ? process.env.CLIENT_ROOT_URI : 'http://localhost:8000';
       res.redirect(`${frontendUrl}/auth/success?token=${token}`);
       
     } catch (error) {
       console.error('OAuth callback error:', error);
-      const frontendUrl = isProduction ? 'https://AddaYTDashboard.vercel.app' : 'http://localhost:8000';
+      const frontendUrl = isProduction ? process.env.CLIENT_ROOT_URI : 'http://localhost:8000';
       res.redirect(`${frontendUrl}/auth/error?message=${encodeURIComponent(error.message)}`);
     }
   } else {
@@ -171,12 +171,12 @@ app.get('/auth/google/callback', async (req, res) => {
     );
 
     // Redirect to frontend with token
-    const frontendUrl = isProduction ? 'https://AddaYTDashboard.vercel.app' : 'http://localhost:8000';
+    const frontendUrl = isProduction ? process.env.CLIENT_ROOT_URI : 'http://localhost:8000';
     res.redirect(`${frontendUrl}/auth/success?token=${token}`);
     
   } catch (error) {
     console.error('OAuth callback error:', error);
-    const frontendUrl = isProduction ? 'https://AddaYTDashboard.vercel.app' : 'http://localhost:8000';
+    const frontendUrl = isProduction ? process.env.CLIENT_ROOT_URI : 'http://localhost:8000';
     res.redirect(`${frontendUrl}/auth/error?message=${encodeURIComponent(error.message)}`);
   }
 });
