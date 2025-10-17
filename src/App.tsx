@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   BarChart3, 
@@ -11,9 +11,7 @@ import {
   Info,
   Calendar,
   ArrowUpRight,
-  PlayCircle,
-  LogOut,
-  User
+  PlayCircle
 } from 'lucide-react'
 import Papa from 'papaparse'
 import {
@@ -28,7 +26,7 @@ import {
   PointElement,
   LineElement,
 } from 'chart.js'
-import { Bar, Line, Doughnut } from 'react-chartjs-2'
+import { Bar } from 'react-chartjs-2'
 
 ChartJS.register(
   CategoryScale,
@@ -115,22 +113,23 @@ function App() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   
   // Authentication states - DISABLED FOR NOW
-  const [isAuthenticated, setIsAuthenticated] = useState(true) // Always authenticated
-  const [user, setUser] = useState<any>({ 
-    name: 'Demo User', 
-    email: 'demo@adda247.com',
-    picture: null 
-  })
-  const [showLogin, setShowLogin] = useState(false) // Never show login
-  const [isLoggingIn, setIsLoggingIn] = useState(false)
-  const [authError, setAuthError] = useState('')
+  // const [isAuthenticated, setIsAuthenticated] = useState(true) // Always authenticated
+  // const [user, setUser] = useState<any>({ 
+  //   name: 'Demo User', 
+  //   email: 'demo@adda247.com',
+  //   picture: null 
+  // })
+  // const [showLogin, setShowLogin] = useState(false) // Never show login
+  // const [isLoggingIn, setIsLoggingIn] = useState(false)
+  // const [authError, setAuthError] = useState('')
 
   // API Base URL - automatically detects environment
-  const API_BASE_URL = window.location.hostname === 'localhost' 
-    ? 'http://localhost:3000' 
-    : 'https://AddaYTDashboard.vercel.app'
+  // const API_BASE_URL = window.location.hostname === 'localhost' 
+  //   ? 'http://localhost:3000' 
+  //   : 'https://AddaYTDashboard.vercel.app'
 
-  // Authentication functions
+  // Authentication functions - DISABLED FOR NOW
+  /*
   const checkAuthStatus = async () => {
     const token = localStorage.getItem('authToken')
     if (!token) {
@@ -160,7 +159,9 @@ function App() {
       setShowLogin(true)
     }
   }
+  */
 
+  /*
   const initiateGoogleLogin = async () => {
     setIsLoggingIn(true)
     setAuthError('')
@@ -206,6 +207,7 @@ function App() {
       console.error('Failed to decode token:', error)
     }
   }
+  */
 
   const formatNumber = (num: number): string => {
     if (num >= 1000000) {
@@ -259,7 +261,7 @@ function App() {
 
           resolve(validData)
         },
-        error: (error) => {
+        error: (error: any) => {
           reject(new Error(`CSV parsing error for ${sheet.name}: ${error.message}`))
         }
       })
@@ -381,6 +383,7 @@ function App() {
     )
   ]
 
+  /*
   const verticalChartData = {
     labels: verticals.map(v => v.name),
     datasets: [
@@ -404,6 +407,7 @@ function App() {
       }
     ]
   }
+  */
 
   if (loading) {
     return (
